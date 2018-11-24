@@ -1,0 +1,44 @@
+http:
+  port: 8080
+admin:
+  port: 9876
+  hostname: localhost
+apiEndpoints:
+  api:
+    host: '*'
+    paths:
+      - /books
+      - /customers
+serviceEndpoints:
+  books:
+    url: 'http://localhost:4545'
+  customers:
+    url: 'http://localhost:5555'
+policies:
+  - basic-auth
+  - cors
+  - expression
+  - key-auth
+  - log
+  - oauth2
+  - proxy
+  - rate-limit
+pipelines:
+  api:
+    apiEndpoints:
+      - api
+    policies:
+      -
+        proxy:
+          -
+            condition:
+              name: pathExact
+              path: /books
+            action:
+              serviceEndpoint: books # see declaration above
+          -
+            condition:
+              name: pathExact
+              path: /customers
+            action:
+              serviceEndpoint: customers # see declaration above
